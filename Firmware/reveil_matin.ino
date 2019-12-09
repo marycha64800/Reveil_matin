@@ -10,9 +10,12 @@
 
 
 
+
+
 // The setup() function runs once each time the micro-controller starts
 void setup()
 {
+    Serial.begin(9600);
 
 
 }
@@ -20,6 +23,7 @@ void setup()
 // Add the main program code into the continuous loop() function
 void loop()
 {
-
-
+    Serial.println((millis() / 1000) / 60);
+    delay(120000);
+    Serial.print("Apres le delais");
 }
