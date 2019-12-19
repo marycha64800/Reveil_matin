@@ -48,6 +48,15 @@ char* Screen::_format_date(int const dayOfTheWeek, int const day, int const mont
     on va formater la date pour quelle affiche le jour en toutes lettre
     
     */
+    char* format_data = (char*)calloc(30, sizeof(char));
+    char day_name[10]="";
+    char number_day[2];
+
+    switch(dayOfTheWeek)
+    {
+    case 1: strcpy(day_name, "Dimanche"); break;
+    case 2: strcpy(day_name, "Lundi"); break;
+    }
 
 
     return nullptr;
