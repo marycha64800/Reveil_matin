@@ -9,9 +9,9 @@ char* Screen::_format_time(int hh, int mm, int ss)
     On formate l'heure s'il elle arrive sous la forme de = 12: 4: 5
     la fonction retourne l'heure sous ce format = 12:04:05
 
-    data contient les donnee "temps" brute formated_data sera le tableau retourner par la fonction 
+    data contient les donnees "temps" brute formated_data sera le tableau retourne par la fonction 
     sa taille doit etre allouee dynamiquement pour etre retournee " fonction calloc(taille tableau,sizeof(char))
-    deplus du fait de le compilateur compile en c++ il ne tolere pas la conversion void* en char que retroune calloc 
+    deplus du fait que le compilateur compile en c++ il ne tolere pas la conversion void* en char que retroune calloc 
     la solution est de caster "forcer" le retour en pointeur sur char 
     attention il faudras librere la memoire ensuite 
     
@@ -45,21 +45,60 @@ char* Screen::_format_time(int hh, int mm, int ss)
 char* Screen::_format_date(int const dayOfTheWeek, int const day, int const month, int const year)
 {
     /*
-    on va formater la date pour quelle affiche le jour en toutes lettre
+    on va formater la date pour quelle affiche le jour et le mois en toutes lettres
     
     */
-    char* format_data = (char*)calloc(30, sizeof(char));
-    char day_name[10]="";
-    char number_day[2];
-
-    switch(dayOfTheWeek)
+    char* format_data = (char*)calloc(50, sizeof(char));
+    char buff[12]="";
+    int data[] = { dayOfTheWeek, day, month, year }; // attention l'ordre du tableau est important 
+    
+    for (int i = 0; i < 4; i++)
     {
-    case 1: strcpy(day_name, "Dimanche"); break;
-    case 2: strcpy(day_name, "Lundi"); break;
+        if (i == 0) 
+        {
+            switch (data[i])
+            {
+            case 1: strcpy(buff, "Lundi"); break;
+            case 2: strcpy(buff, "Mardi"); break;
+            case 3: strcpy(buff, "Mercredi"); break;
+            case 4: strcpy(buff, "Jeudi"); break;
+            case 5: strcpy(buff, "Vendredi"); break;
+            case 6: strcpy(buff, "Samedi"); break;
+            case 7: strcpy(buff, "Dimanche"); break;
+            default: strcpy(buff, "Err: Jour"); break;
+            }
+
+        }
+        else if (i == 2)
+        {
+            switch (data[i])
+            {
+            case 1: strcpy(buff, "Janvier"); break;
+            case 2: strcpy(buff, "Fevrier"); break;
+            case 3: strcpy(buff, "Mars"); break;
+            case 4: strcpy(buff, "Avril"); break;
+            case 5: strcpy(buff, "Mai"); break;
+            case 6: strcpy(buff, "Juin"); break;
+            case 7: strcpy(buff, "Juillet"); break;
+            case 8: strcpy(buff, "Aout"); break;
+            case 9: strcpy(buff, "Septembre"); break;
+            case 10: strcpy(buff, "Octobre"); break;
+            case 11: strcpy(buff, "Novembre"); break;
+            case 12: strcpy(buff, "Decembre"); break;
+            default: strcpy(buff, "Err: Mois"); break;
+            }
+        }
+        else
+        {
+            sprintf(buff, " %d ", data[i]);
+        }
+        
+        strcat(format_data, buff);
+
+
     }
 
-
-    return nullptr;
+    return format_data;
 }
 
 Screen::Screen(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows) : LiquidCrystal_I2C(lcd_Addr, lcd_cols, lcd_rows)
@@ -88,7 +127,10 @@ void Screen::display_home(DateTime* date)
     char* time = _format_time( date->hour(), date->minute(), date->second());
     print(time);
     free(time);
-    char* date = _format_date(date->dayOfTheWeek(), date->day(), date->month(), date->year());
+    char* today_date = _format_date(date->dayOfTheWeek(), date->day(), date->month(), date->year());
+    setCursor(0, 1);
+    print(today_date);
+    free(today_date);
  
 
 }
