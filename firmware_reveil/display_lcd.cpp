@@ -64,7 +64,7 @@ char* Screen::_format_date(int const dayOfTheWeek, int const day, int const mont
             case 4: strcpy(buff, "Jeudi"); break;
             case 5: strcpy(buff, "Vendredi"); break;
             case 6: strcpy(buff, "Samedi"); break;
-            case 7: strcpy(buff, "Dimanche"); break;
+            case 0: strcpy(buff, "Dimanche"); break;
             default: strcpy(buff, "Err: Jour"); break;
             }
 
@@ -101,6 +101,68 @@ char* Screen::_format_date(int const dayOfTheWeek, int const day, int const mont
     return format_data;
 }
 
+void Screen::_scroll_one_line(char* text_to_scroll, int line)
+{
+    /*
+    Methode qui permet de deplacer du texte sur une seule ligne sans bloquer l'excution d'autre programe.
+
+    Pour les besoins des variables globale garde en memoire l'avancer du texte et le delay entre deux affichage 
+    La fonction travaille differement a partir du moment ou le texte remplit tout l'ecran. 
+    Un pointeur sur le texte et dirige sur le premier caractere tandis que l'on increment un index pour que celui 
+    ci demarre l'affichage a partir de ce nouveau index.
+
+    Une fois terminer on remet tout a zero et on peu repartir 
+    
+    */
+
+    unsigned long current_millis = millis();
+    int size_char = strlen(text_to_scroll);
+
+
+    if (current_millis - PREVIOUS_MILLIS >= DELAY_SCROLL)// fonction non bloquante le delay et reglable dans le header
+    {
+        if (INDEX_LCD >= 0 ) // vrai tant que l'ecran n'est pas rempli
+        {
+            setCursor(INDEX_LCD, line);
+            print(text_to_scroll);
+            INDEX_LCD--;
+            PREVIOUS_MILLIS = current_millis;
+        }
+
+        else if (INDEX_LCD <= 0 && INDEX_CHAR <= size_char) //l'ecran est rempli on va maintenant selectioner ce que l'on affiche
+        {
+           
+            if (INDEX_CHAR <= size_char)
+            {
+                char* scroll_end = strchr(text_to_scroll, text_to_scroll[0]); // je posisione le pointeur sur le debut de mon texte
+                setCursor(INDEX_LCD, line);
+                print((scroll_end+INDEX_CHAR));// j'increment mon pointeur pour qu'il ne m'affiche que le reste du texte
+                INDEX_CHAR++;
+                PREVIOUS_MILLIS = current_millis;
+            }
+            else
+            {
+                setCursor(0, line);
+                print("Err: endScroll");
+            }
+            
+        }
+        else if (INDEX_LCD <= 0 && INDEX_CHAR >= size_char) // tout le texte est passer on reinitialise les variable globale
+        {
+            INDEX_CHAR = 0;
+            INDEX_LCD = SIZE_LCD-1;
+        }
+
+        else
+        {
+            setCursor(0, 1);
+            print("Err: scroll");
+        }
+        
+    }
+    
+}
+
 Screen::Screen(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows) : LiquidCrystal_I2C(lcd_Addr, lcd_cols, lcd_rows)
 {
 
@@ -128,9 +190,14 @@ void Screen::display_home(DateTime* date)
     print(time);
     free(time);
     char* today_date = _format_date(date->dayOfTheWeek(), date->day(), date->month(), date->year());
-    setCursor(0, 1);
-    print(today_date);
+    if (strlen(today_date) > 16)
+    {       
+        _scroll_one_line(today_date, 1);
+    }
+    //setCursor(0, 1);
+    //print(today_date);
     free(today_date);
+
  
 
 }

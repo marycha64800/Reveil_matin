@@ -8,12 +8,9 @@
 
 // The setup() function runs once each time the micro-controller starts
 
-#include <LiquidCrystal_I2C.h>
-#include <RTClib.h>
-
 #include"display_lcd.h"
 
-Screen Lcd(ADRR_LCD, 20, 4);
+Screen Lcd(ADRR_LCD, 16, 2);
 RTC_DS1307 Rtc ;
 
 void setup()
@@ -35,4 +32,5 @@ void loop()
 {
   DateTime now = Rtc.now();  
     Lcd.display_home(&now);
+    
 }
