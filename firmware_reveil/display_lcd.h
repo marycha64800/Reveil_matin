@@ -1,6 +1,6 @@
 #ifndef SCREEN_H_
 #define SCREEN_H_
-#define DELAY_SCROLL 1000
+#define DELAY_SCROLL 500
 #define SIZE_LCD 16
 
 #include <LiquidCrystal_I2C.h>

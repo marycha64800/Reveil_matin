@@ -134,7 +134,7 @@ void Screen::_scroll_one_line(char* text_to_scroll, int line)
            
             if (INDEX_CHAR <= size_char)
             {
-                char* scroll_end = strchr(text_to_scroll, text_to_scroll[0]); // je posisione le pointeur sur le debut de mon texte
+                char* scroll_end = strchr(text_to_scroll, text_to_scroll[1]); // je posisione le pointeur sur le debut de mon texte
                 setCursor(INDEX_LCD, line);
                 print((scroll_end+INDEX_CHAR));// j'increment mon pointeur pour qu'il ne m'affiche que le reste du texte
                 INDEX_CHAR++;
