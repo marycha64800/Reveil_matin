@@ -6,7 +6,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <RTClib.h>
 
-static int INDEX_CHAR = 0;
+static int INDEX_CHAR = 1;
 static int INDEX_LCD = SIZE_LCD - 1;
 static unsigned long PREVIOUS_MILLIS = 0;
 
@@ -14,7 +14,7 @@ static unsigned long PREVIOUS_MILLIS = 0;
 class Screen : public LiquidCrystal_I2C
 {
   private:
-      char* _format_time(int const hh, int const mm, int const ss);
+      void _format_time(int const hh, int const mm, int const ss);
       char* _format_date(int const dayOfTheWeek, int const day, int const month, int const year);
       void _scroll_one_line(char* text_to_scroll, int line);
     

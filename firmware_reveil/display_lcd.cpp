@@ -3,43 +3,17 @@
 
 
 
-char* Screen::_format_time(int hh, int mm, int ss)
+void Screen::_format_time(int hh, int mm, int ss)
 {
     /*
     On formate l'heure s'il elle arrive sous la forme de = 12: 4: 5
-    la fonction retourne l'heure sous ce format = 12:04:05
+    la fonction affiche l'heure sous ce format = 12:04:05
 
-    data contient les donnees "temps" brute formated_data sera le tableau retourne par la fonction 
-    sa taille doit etre allouee dynamiquement pour etre retournee " fonction calloc(taille tableau,sizeof(char))
-    deplus du fait que le compilateur compile en c++ il ne tolere pas la conversion void* en char que retroune calloc 
-    la solution est de caster "forcer" le retour en pointeur sur char 
-    attention il faudras librere la memoire ensuite 
-    
     */
-    char buff[3] = "";
-    int i;
-    int data[3] = {hh, mm, ss};
-    char* formated_data = NULL;
-    formated_data = (char*)calloc(16 ,sizeof(char)); 
-   
-    for (i = 0; i < 3; i++)
-    {
-        sprintf(buff, "%d", data[i]);
 
-        if (strlen(buff) < 2 && data[i] != hh) // on ne veut pas que les heures soit avec un zero au debut 
-        {
-            char c[2] = "0"; // on cree notre 0 artificiel
-            strcat(c, buff);// on colle notre heure derriere
-            strcpy(buff, c);// on remet le tout dans buff pour conserver le meme nom de variable 
-
-        }
-        if (i < 2)
-            {
-                strcat(buff, ":"); // ajout des deux point entre chaque champs mais on evite de le mettre a la fin
-            }
-        strcat(formated_data, buff);
-    }
-    return formated_data;
+    char buff[10];
+    sprintf(buff, "%2d:%02d:%02d", hh, mm, ss);
+    print(buff);
 }
 
 char* Screen::_format_date(int const dayOfTheWeek, int const day, int const month, int const year)
@@ -134,7 +108,7 @@ void Screen::_scroll_one_line(char* text_to_scroll, int line)
            
             if (INDEX_CHAR <= size_char)
             {
-                char* scroll_end = strchr(text_to_scroll, text_to_scroll[1]); // je posisione le pointeur sur le debut de mon texte
+                char* scroll_end = text_to_scroll; // je posisione le pointeur sur le debut de mon texte
                 setCursor(INDEX_LCD, line);
                 print((scroll_end+INDEX_CHAR));// j'increment mon pointeur pour qu'il ne m'affiche que le reste du texte
                 INDEX_CHAR++;
@@ -149,7 +123,7 @@ void Screen::_scroll_one_line(char* text_to_scroll, int line)
         }
         else if (INDEX_LCD <= 0 && INDEX_CHAR >= size_char) // tout le texte est passer on reinitialise les variable globale
         {
-            INDEX_CHAR = 0;
+            INDEX_CHAR = 1;
             INDEX_LCD = SIZE_LCD-1;
         }
 
@@ -186,17 +160,21 @@ void Screen::display_home(DateTime* date)
     home();
     backlight();
     setCursor(4, 0);
-    char* time = _format_time( date->hour(), date->minute(), date->second());
-    print(time);
-    free(time);
+    _format_time(date->hour(), date->minute(), date->second());// s'occupe de formater et afficher l'heure
+    
     char* today_date = _format_date(date->dayOfTheWeek(), date->day(), date->month(), date->year());
     if (strlen(today_date) > 16)
     {       
         _scroll_one_line(today_date, 1);
+        free(today_date);
     }
-    //setCursor(0, 1);
-    //print(today_date);
-    free(today_date);
+    else
+    {
+        setCursor(0, 1);
+        print(today_date);
+    }
+    
+    
 
  
 
