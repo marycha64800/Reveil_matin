@@ -4,7 +4,7 @@
     Author:     Marycha
 */
 #define ADRR_LCD 0x3F
-
+#define PIN_SWITCH_ALRM 2
 
 // The setup() function runs once each time the micro-controller starts
 
@@ -25,12 +25,15 @@ void setup()
     {
         Rtc.adjust(DateTime(__DATE__, __TIME__));
     }
-   
+   // declaration des pins
+
+    pinMode(PIN_SWITCH_ALRM, INPUT);
 }
 
 void loop()
 {
-  DateTime now = Rtc.now();  
-    Lcd.display_home(&now);
+  DateTime now = Rtc.now();
+  Lcd.Setup(digitalRead(PIN_SWITCH_ALRM));
+  Lcd.display_home(&now);
     
 }

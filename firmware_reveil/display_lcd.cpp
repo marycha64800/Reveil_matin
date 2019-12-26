@@ -3,79 +3,50 @@
 
 
 
-void Screen::_format_time(int hh, int mm, int ss)
+
+void Screen::display_alarm()
+{
+    if (state_alarm)
+    {
+        setCursor(0, 0);
+        print("on");
+
+    }
+    else
+    {
+        setCursor(0, 0);
+        print("off");
+    }
+    
+}
+ Screen::_TimeString Screen:: _format_time(int const hh, int const mm, int const ss)
 {
     /*
     On formate l'heure s'il elle arrive sous la forme de = 12: 4: 5
     la fonction affiche l'heure sous ce format = 12:04:05
-
+        
     */
 
-    char buff[10];
-    sprintf(buff, "%2d:%02d:%02d", hh, mm, ss);
-    print(buff);
+    _TimeString buff;
+    sprintf(buff.data, "%2d:%02d:%02d", hh, mm, ss);
+    return buff;
 }
 
-char* Screen::_format_date(int const dayOfTheWeek, int const day, int const month, int const year)
+Screen::_DateString Screen::_format_date(int const dayOfTheWeek, int const day, int const month, int const year)
 {
     /*
-    on va formater la date pour quelle affiche le jour et le mois en toutes lettres
-    
+            methoque qui formate la date du jour et renvoie une structure ( tableau ) pour qu'il pouisse etre affiche)
     */
-    char* format_data = (char*)calloc(50, sizeof(char));
-    char buff[12]="";
-    int data[] = { dayOfTheWeek, day, month, year }; // attention l'ordre du tableau est important 
     
-    for (int i = 0; i < 4; i++)
-    {
-        if (i == 0) 
-        {
-            switch (data[i])
-            {
-            case 1: strcpy(buff, "Lundi"); break;
-            case 2: strcpy(buff, "Mardi"); break;
-            case 3: strcpy(buff, "Mercredi"); break;
-            case 4: strcpy(buff, "Jeudi"); break;
-            case 5: strcpy(buff, "Vendredi"); break;
-            case 6: strcpy(buff, "Samedi"); break;
-            case 0: strcpy(buff, "Dimanche"); break;
-            default: strcpy(buff, "Err: Jour"); break;
-            }
-
-        }
-        else if (i == 2)
-        {
-            switch (data[i])
-            {
-            case 1: strcpy(buff, "Janvier"); break;
-            case 2: strcpy(buff, "Fevrier"); break;
-            case 3: strcpy(buff, "Mars"); break;
-            case 4: strcpy(buff, "Avril"); break;
-            case 5: strcpy(buff, "Mai"); break;
-            case 6: strcpy(buff, "Juin"); break;
-            case 7: strcpy(buff, "Juillet"); break;
-            case 8: strcpy(buff, "Aout"); break;
-            case 9: strcpy(buff, "Septembre"); break;
-            case 10: strcpy(buff, "Octobre"); break;
-            case 11: strcpy(buff, "Novembre"); break;
-            case 12: strcpy(buff, "Decembre"); break;
-            default: strcpy(buff, "Err: Mois"); break;
-            }
-        }
-        else
-        {
-            sprintf(buff, " %d ", data[i]);
-        }
-        
-        strcat(format_data, buff);
-
-
-    }
-
-    return format_data;
+    char const* day_format[] = { "Dimanche", "Lundi", "Mardi","Mercredi","Jeudi","Vendredi","Samedi" };
+    char const* month_format[] = { "Janvier", "Fervrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre" };
+    _DateString date_format;
+   
+    sprintf(date_format.data, "%s %02d %s %d ", day_format[dayOfTheWeek], day, month_format[11], year);
+    return date_format;
 }
 
-void Screen::_scroll_one_line(char* text_to_scroll, int line)
+void Screen::_scroll_one_line( char const* text_to_scroll, int const line)
 {
     /*
     Methode qui permet de deplacer du texte sur une seule ligne sans bloquer l'excution d'autre programe.
@@ -90,7 +61,7 @@ void Screen::_scroll_one_line(char* text_to_scroll, int line)
     */
 
     unsigned long current_millis = millis();
-    int size_char = strlen(text_to_scroll);
+    int const size_char = strlen(text_to_scroll);
 
 
     if (current_millis - PREVIOUS_MILLIS >= DELAY_SCROLL)// fonction non bloquante le delay et reglable dans le header
@@ -108,9 +79,8 @@ void Screen::_scroll_one_line(char* text_to_scroll, int line)
            
             if (INDEX_CHAR <= size_char)
             {
-                char* scroll_end = text_to_scroll; // je posisione le pointeur sur le debut de mon texte
                 setCursor(INDEX_LCD, line);
-                print((scroll_end+INDEX_CHAR));// j'increment mon pointeur pour qu'il ne m'affiche que le reste du texte
+                print((text_to_scroll+INDEX_CHAR));// j'increment mon pointeur pour qu'il ne m'affiche que le reste du texte
                 INDEX_CHAR++;
                 PREVIOUS_MILLIS = current_millis;
             }
@@ -160,24 +130,20 @@ void Screen::display_home(DateTime* date)
     home();
     backlight();
     setCursor(4, 0);
-    _format_time(date->hour(), date->minute(), date->second());// s'occupe de formater et afficher l'heure
-    
-    char* today_date = _format_date(date->dayOfTheWeek(), date->day(), date->month(), date->year());
-    if (strlen(today_date) > 16)
+    _TimeString const time = _format_time(date->hour(), date->minute(), date->second());// s'occupe de formater et afficher l'heure
+    print(time.data);
+    _DateString const today_date = _format_date(date->dayOfTheWeek(), date->day(), date->month(), date->year());
+
+    if (strlen(today_date.data) > 16)
     {       
-        _scroll_one_line(today_date, 1);
-        free(today_date);
+        _scroll_one_line(today_date.data, 1);
     }
     else
     {
         setCursor(0, 1);
-        print(today_date);
+        print(today_date.data);
     }
-    
-    
-
- 
-
+    display_alarm();
 }
 
 
