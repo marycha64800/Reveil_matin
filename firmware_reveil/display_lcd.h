@@ -1,10 +1,12 @@
 #ifndef SCREEN_H_
 #define SCREEN_H_
+
+//#include <RTClib.h>
+//#include <LiquidCrystal_I2C.h>
+
 #define DELAY_SCROLL 500
 #define SIZE_LCD 16
 
-#include <LiquidCrystal_I2C.h>
-#include <RTClib.h>
 
 static int INDEX_CHAR = 1;
 static int INDEX_LCD = SIZE_LCD - 1;
@@ -29,6 +31,7 @@ class Screen : public LiquidCrystal_I2C
       _TimeString _format_time(int const hh, int const mm, int const ss);
       _DateString _format_date(int const dayOfTheWeek, int const day, int const month, int const year);
       void _scroll_one_line(char const* text_to_scroll, int line);
+      void _display_alarm(bool switch_alrm);
       
   public:
 
@@ -37,8 +40,8 @@ class Screen : public LiquidCrystal_I2C
     volatile bool state_alarm;
 
     void Setup(bool aState_alarm);
-    void display_home(DateTime* date);
-    void display_alarm();
+    void display_home(DateTime* date, bool switch_alrm);
+    
     
     //void display_test(char *message);
     

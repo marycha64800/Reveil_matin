@@ -4,18 +4,23 @@
 
 
 
-void Screen::display_alarm()
+void Screen::_display_alarm(bool swch_alrm)
 {
-    if (state_alarm)
+    if (swch_alrm)
     {
         setCursor(0, 0);
-        print("on");
+        print("**");
+        setCursor(14, 0);
+        print("**");
 
     }
     else
     {
         setCursor(0, 0);
-        print("off");
+        print("  ");
+        setCursor(14, 0);
+        print("  ");
+
     }
     
 }
@@ -32,6 +37,9 @@ void Screen::display_alarm()
     return buff;
 }
 
+
+
+
 Screen::_DateString Screen::_format_date(int const dayOfTheWeek, int const day, int const month, int const year)
 {
     /*
@@ -45,6 +53,9 @@ Screen::_DateString Screen::_format_date(int const dayOfTheWeek, int const day, 
     sprintf(date_format.data, "%s %02d %s %d ", day_format[dayOfTheWeek], day, month_format[11], year);
     return date_format;
 }
+
+
+
 
 void Screen::_scroll_one_line( char const* text_to_scroll, int const line)
 {
@@ -107,20 +118,17 @@ void Screen::_scroll_one_line( char const* text_to_scroll, int const line)
     
 }
 
+
+
+
 Screen::Screen(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows) : LiquidCrystal_I2C(lcd_Addr, lcd_cols, lcd_rows)
 {
 
 
 }
 
-void Screen::Setup(bool aState_alarm)
-{
 
-    state_alarm = aState_alarm;
-
-}
-
-void Screen::display_home(DateTime* date)
+void Screen::display_home(DateTime* date, bool switch_alrm)
 {
     /*
     - on affiche lheure et la date correctement sur l'ecran 16*2 s'il le texte est trop grand (date du jour ) 
@@ -143,18 +151,5 @@ void Screen::display_home(DateTime* date)
         setCursor(0, 1);
         print(today_date.data);
     }
-    display_alarm();
+    _display_alarm(switch_alrm);
 }
-
-
-/*void Screen::display_test(char* message)
-{
-    home();
-    backlight();
-    setCursor(0, 0);
-    print(message);
-    print(", je mesure: ");
-    print(strlen(message));
-    print("C");
-}
-*/
