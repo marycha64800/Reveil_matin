@@ -1,17 +1,34 @@
 
 
 #include "switch.h"
+#include "arduino.h"
 
-Switch::Switch()
+Switch::Switch(int pin )
 {
+	swicth_pin = pin;
+}
+	
 
+void Switch::init()
+{
+	pinMode(swicth_pin, INPUT_PULLUP);
+	
 }
 
-void Switch::init(int swch_1, int swch_2, int swch_3, int swch_4, int swch_5)
+bool Switch::ctl_state()
 {
-	int init_pin[5]{ swch_1,swch_2,swch_3,swch_4,swch_5 };
-	for (int i{ 0 }; i < 5; i++)
+	if (digitalRead(swicth_pin))
 	{
-		pinMode(init_pin[i], INPUT_PULLUP);
+		state = true;
 	}
+	else
+	{
+		state = false;
+	}
+ return state;
+}
+
+PushButton::PushButton(int pin) : Switch(pin)
+{
+
 }

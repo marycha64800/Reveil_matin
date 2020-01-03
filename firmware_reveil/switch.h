@@ -9,16 +9,32 @@
 class Switch
 {
 public:
-	Switch();
-	void init(int swch_blue, int swch_white, int swch_black, int swch_yellow, int swch_alrm);
-
+	Switch(int pin);
+	void init();
+	volatile bool state;
+	bool ctl_state();
 	
 
+protected:
+	 int  swicth_pin;
+
 private:
+
 
 };
 
 
+
+class PushButton : public Switch
+{
+public:
+	PushButton(int pin);
+
+
+protected:
+
+
+};
 
 
 #endif

@@ -50,7 +50,7 @@ Screen::_DateString Screen::_format_date(int const dayOfTheWeek, int const day, 
     char const* month_format[] = { "Janvier", "Fervrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre" };
     _DateString date_format;
    
-    sprintf(date_format.data, "%s %02d %s %d ", day_format[dayOfTheWeek], day, month_format[11], year);
+    sprintf(date_format.data, "%s %02d %s %d ", day_format[dayOfTheWeek], day, month_format[month-1], year);// -1 a month pour le permetre d'etre compatible avec les tableaux 
     return date_format;
 }
 
