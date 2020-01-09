@@ -45,12 +45,8 @@ Screen::_DateString Screen::_format_date(int const dayOfTheWeek, int const day, 
     /*
             methoque qui formate la date du jour et renvoie une structure ( tableau ) pour qu'il pouisse etre affiche)
     */
-    
-    char const* day_format[] = { "Dimanche", "Lundi", "Mardi","Mercredi","Jeudi","Vendredi","Samedi" };
-    char const* month_format[] = { "Janvier", "Fervrier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aout", "Septembre", "Octobre", "Novembre", "Decembre" };
     _DateString date_format;
-   
-    sprintf(date_format.data, "%s %02d %s %d ", day_format[dayOfTheWeek], day, month_format[month-1], year);// -1 a month pour le permetre d'etre compatible avec les tableaux 
+    sprintf(date_format.data, "%s %02d %s %d ", _day_format[dayOfTheWeek], day, _month_format[month-1], year);// -1 a month pour le permetre d'etre compatible avec les tableaux 
     return date_format;
 }
 
@@ -60,9 +56,9 @@ Screen::_DateString Screen::_format_date(int const dayOfTheWeek, int const day, 
 void Screen::_scroll_one_line( char const* text_to_scroll, int const line)
 {
     /*
-    Methode qui permet de deplacer du texte sur une seule ligne sans bloquer l'excution d'autre programe.
+    Methode qui permet de deplacer du texte sur une seule ligne sans bloquer l'excution d'autre programme.
 
-    Pour les besoins des variables globale garde en memoire l'avancer du texte et le delay entre deux affichage 
+    Pour les besoins des variables globale garde en memoire l'avancee du texte et le delay entre deux affichage 
     La fonction travaille differement a partir du moment ou le texte remplit tout l'ecran. 
     Un pointeur sur le texte et dirige sur le premier caractere tandis que l'on increment un index pour que celui 
     ci demarre l'affichage a partir de ce nouveau index.
@@ -152,4 +148,56 @@ void Screen::display_home(DateTime* date, bool switch_alrm)
         print(today_date.data);
     }
     _display_alarm(switch_alrm);
+}
+
+void Screen::display_set_hour(int const increm_hh, int const increm_mm, int const sec)
+{
+    setCursor(1, 0);
+    print("REGLAGE HEURE:");
+    setCursor(4, 1);
+    _TimeString time;
+    sprintf(time.data,"%02d:%02d:%02d", increm_hh, increm_mm, sec);
+    print(time.data);
+}
+
+void Screen::display_set_alrm(int hh, int mm)
+{
+    setCursor(0, 0);
+    print("*REGLAGE ALARME*");
+    setCursor(5, 1);
+    char buff[6];
+    sprintf(buff, "%02d:%02d", hh, mm);
+    print(buff);
+}
+
+void Screen::display_set_year(unsigned long const yy)
+{
+    setCursor(1, 0);
+    print("REGLAGE ANNEE:");
+    setCursor(6, 1);
+    print(yy);
+}
+
+void Screen::display_set_month(int const mth)
+{
+    setCursor(0, 0);
+    print("REGLAGE MOIS:");
+    setCursor(13, 0);
+    char buff[10];
+    sprintf(buff, "%02d", mth);
+    print(buff);
+    setCursor(0, 1);
+    sprintf(buff, "%10s", _month_format[mth-1]);
+    print(buff);
+    
+}
+
+void Screen::display_set_day(int const dy)
+{
+    setCursor(1, 0);
+    print("REGLAGE JOUR:");
+    setCursor(6, 1);
+    char buff[3];
+    sprintf(buff, "%02d", dy);
+    print(buff);
 }

@@ -11,19 +11,20 @@ Switch::Switch(int pin )
 
 void Switch::init()
 {
-	pinMode(swicth_pin, INPUT_PULLUP);
+	pinMode(swicth_pin, INPUT);
 	
 }
 
 bool Switch::ctl_state()
 {
+  delay(_delay_push);
 	if (digitalRead(swicth_pin))
 	{
-		state = true;
+		state = false;
 	}
 	else
 	{
-		state = false;
+		state = true;
 	}
  return state;
 }
@@ -31,4 +32,22 @@ bool Switch::ctl_state()
 PushButton::PushButton(int pin) : Switch(pin)
 {
 
+}
+
+
+
+PushButton::Command PushButton::long_push()
+{
+	Command order;
+	if (ctl_state())
+	{
+		order.action = true;
+		order.increment = 1;
+	}
+	else
+	{
+		order.action = false;
+		order.increment = 0;
+	}
+	return order;
 }
