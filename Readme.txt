@@ -22,16 +22,13 @@ Design :
 Materiel :
 
 - arduino 
-- ecran 16*2 lcd
+- ecran 16*2 lcd i2c
 - 2 matrice 8*8
 - rtc module ( permanance de l'heure ) 
-- potentiometre ( ecran lcd )
 - buzzer ( avec resistance ) 
 - plaque circuit 
 - bouton poussoir x4
 - interrupteur on off 
-
-
 
 
 

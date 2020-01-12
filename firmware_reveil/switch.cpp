@@ -1,9 +1,10 @@
 
 
 #include "switch.h"
-#include "arduino.h"
 
-Switch::Switch(int pin )
+
+
+Switch::Switch(uint8_t pin )
 {
 	swicth_pin = pin;
 }
@@ -29,8 +30,9 @@ bool Switch::ctl_state()
  return state;
 }
 
-PushButton::PushButton(int pin) : Switch(pin)
+PushButton::PushButton(uint8_t pin) : Switch(pin)
 {
+
 
 }
 

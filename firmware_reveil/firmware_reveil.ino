@@ -4,36 +4,36 @@
     Author:     Marycha
 */
 
-#include <RTClib.h>
-#include <LiquidCrystal_I2C.h>
+//#include <RTClib.h>
+//#include <LiquidCrystal_I2C.h>
 
 #include"display_lcd.h"
 #include"switch.h"
 
-const byte ADRR_LCD = 0x3F;
-const byte PIN_SWITCH_ALRM = 2;
-const byte PIN_SWICTH_BLUE = 3;
-const byte PIN_SWITCH_WHITE = 4;
-const byte PIN_SWITCH_BLACK = 5;
-const byte PIN_SWITCH_YELLOW = 6;
+const uint8_t ADRR_LCD = 0x3F;
+const uint8_t PIN_SWITCH_ALRM = 2;
+const uint8_t PIN_SWICTH_BLUE = 3;
+const uint8_t PIN_SWITCH_WHITE = 4;
+const uint8_t PIN_SWITCH_BLACK = 5;
+const uint8_t PIN_SWITCH_YELLOW = 6;
 
 
 
 struct NewSettingValue
 {
-    byte hh = 0;
-    byte mm = 0; 
-    byte ss = 0; 
-    int yy = 0;
-    byte mth = 0;
-    byte dy = 0;
-    byte dy_of_wk = 0;
+    uint8_t hh = 0;
+    uint8_t mm = 0; 
+    uint8_t ss = 0; 
+    uint16_t yy = 0;
+    uint8_t mth = 0;
+    uint8_t dy = 0;
+    uint8_t dy_of_wk = 0;
 };
 
 
 /*****************************************************************************************************
-
-                                           Prototype
+                                                                                                
+                                         Prototype                                                     
 
 
 ******************************************************************************************************/
@@ -41,11 +41,11 @@ struct NewSettingValue
 
 void alarm_shut_down();
 void set_now(DateTime* date );
-void set_hours(byte hh, byte mm, byte ss, NewSettingValue* new_value);
+void set_hours(uint8_t hh, uint8_t mm, uint8_t ss, NewSettingValue* new_value);
 void set_alrm(NewSettingValue* alarm);
-byte set_day(byte dy);
-byte set_month(byte mth);
-int set_year(int yy);
+uint8_t set_day(uint8_t dy);
+uint8_t set_month(uint8_t mth);
+uint16_t set_year(uint16_t yy);
 
 
 /*****************************************************************************************************
@@ -99,7 +99,6 @@ void loop()
   
   if (Wht_bttn.long_push().action)
   {
-     
       set_now(&now);
       while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relache pour continuer*/ };
   }
@@ -139,7 +138,7 @@ void set_now(DateTime* date )
     
 }
 
-byte set_day(byte dy)
+uint8_t set_day(uint8_t dy)
 {
     while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relacher pour continuer*/ };
     Lcd.clear();
@@ -163,7 +162,7 @@ byte set_day(byte dy)
 
 
 
-byte set_month(byte mth)
+uint8_t set_month(uint8_t mth)
 {
     while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relacher pour continuer*/ };
     Lcd.clear();
@@ -185,7 +184,7 @@ byte set_month(byte mth)
     return mth;
 }
 
-int set_year(int yy)
+uint16_t set_year(uint16_t yy)
 {
     while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relacher pour continuer*/ };
     Lcd.clear();
@@ -206,7 +205,7 @@ int set_year(int yy)
     return yy;
 }
 
-void set_hours(byte hh, byte mm, byte ss, NewSettingValue * new_value)
+void set_hours(uint8_t hh, uint8_t mm, uint8_t ss, NewSettingValue * new_value)
 {
     while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relacher pour continuer*/ };
     new_value->hh = hh;

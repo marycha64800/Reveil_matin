@@ -2,7 +2,13 @@
 #include "display_lcd.h"
 
 
-
+Screen::Screen(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows, uint16_t dly_scrll) : LiquidCrystal_I2C(lcd_Addr, lcd_cols, lcd_rows)
+{
+    _size_lcd = lcd_cols;
+    _delay_scroll = dly_scrll;
+    _index_lcd = _size_lcd - 1;
+    _previous_millis = 0;
+}
 
 void Screen::_display_alarm(bool swch_alrm)
 {
@@ -24,7 +30,7 @@ void Screen::_display_alarm(bool swch_alrm)
     }
     
 }
- Screen::_TimeString Screen:: _format_time(int const hh, int const mm, int const ss)
+Screen::_TimeString Screen::_format_time(uint8_t const hh, uint8_t const mm, uint8_t const ss)
 {
     /*
     On formate l'heure s'il elle arrive sous la forme de = 12: 4: 5
@@ -38,9 +44,7 @@ void Screen::_display_alarm(bool swch_alrm)
 }
 
 
-
-
-Screen::_DateString Screen::_format_date(int const dayOfTheWeek, int const day, int const month, int const year)
+Screen::_DateString Screen::_format_date(uint8_t const dayOfTheWeek, uint8_t const day, uint8_t const month, uint16_t const year)
 {
     /*
             methoque qui formate la date du jour et renvoie une structure ( tableau ) pour qu'il pouisse etre affiche)
@@ -53,7 +57,7 @@ Screen::_DateString Screen::_format_date(int const dayOfTheWeek, int const day, 
 
 
 
-void Screen::_scroll_one_line( char const* text_to_scroll, int const line)
+void Screen::_scroll_one_line( char const* text_to_scroll, uint8_t const line)
 {
     /*
     Methode qui permet de deplacer du texte sur une seule ligne sans bloquer l'excution d'autre programme.
@@ -67,61 +71,42 @@ void Screen::_scroll_one_line( char const* text_to_scroll, int const line)
     
     */
 
-    unsigned long current_millis = millis();
-    int const size_char = strlen(text_to_scroll);
+    uint8_t const size_char = strlen(text_to_scroll);
 
 
-    if (current_millis - PREVIOUS_MILLIS >= DELAY_SCROLL)// fonction non bloquante le delay et reglable dans le header
+    if (millis() - _previous_millis >= _delay_scroll)// fonction non bloquante le delay et reglable dans le header
     {
-        if (INDEX_LCD >= 0 ) // vrai tant que l'ecran n'est pas rempli
+        if (_index_lcd >= 0 ) // vrai tant que l'ecran n'est pas rempli
         {
-            setCursor(INDEX_LCD, line);
+            setCursor(_index_lcd, line);
             print(text_to_scroll);
-            INDEX_LCD--;
-            PREVIOUS_MILLIS = current_millis;
+            _index_lcd--;
+            _previous_millis = millis();
         }
 
-        else if (INDEX_LCD <= 0 && INDEX_CHAR <= size_char) //l'ecran est rempli on va maintenant selectioner ce que l'on affiche
+        else if (_index_lcd <= 0 && _index_char <= size_char) //l'ecran est rempli on va maintenant selectioner ce que l'on affiche
         {
            
-            if (INDEX_CHAR <= size_char)
+            if (_index_char <= size_char)
             {
-                setCursor(INDEX_LCD, line);
-                print((text_to_scroll+INDEX_CHAR));// j'increment mon pointeur pour qu'il ne m'affiche que le reste du texte
-                INDEX_CHAR++;
-                PREVIOUS_MILLIS = current_millis;
+                setCursor(_index_lcd, line);
+                print((text_to_scroll+_index_char));// j'increment mon pointeur pour qu'il ne m'affiche que le reste du texte
+                _index_char++;
+                _previous_millis = millis();
             }
-            else
-            {
-                setCursor(0, line);
-                print("Err: endScroll");
-            }
-            
-        }
-        else if (INDEX_LCD <= 0 && INDEX_CHAR >= size_char) // tout le texte est passer on reinitialise les variable globale
-        {
-            INDEX_CHAR = 1;
-            INDEX_LCD = SIZE_LCD-1;
+
         }
 
-        else
+        else if (_index_lcd <= 0 && _index_char >= size_char) // tout le texte est passe on reinitialise les variables 
         {
-            setCursor(0, 1);
-            print("Err: scroll");
+            _index_char = 1;
+            _index_lcd = _size_lcd - 1;
         }
-        
+
     }
     
 }
 
-
-
-
-Screen::Screen(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows) : LiquidCrystal_I2C(lcd_Addr, lcd_cols, lcd_rows)
-{
-
-
-}
 
 
 void Screen::display_home(DateTime* date, bool switch_alrm)
@@ -138,7 +123,7 @@ void Screen::display_home(DateTime* date, bool switch_alrm)
     print(time.data);
     _DateString const today_date = _format_date(date->dayOfTheWeek(), date->day(), date->month(), date->year());
 
-    if (strlen(today_date.data) > 16)
+    if (strlen(today_date.data) > _size_lcd)
     {       
         _scroll_one_line(today_date.data, 1);
     }
@@ -150,8 +135,14 @@ void Screen::display_home(DateTime* date, bool switch_alrm)
     _display_alarm(switch_alrm);
 }
 
-void Screen::display_set_hour(int const increm_hh, int const increm_mm, int const sec)
+
+
+void Screen::display_set_hour(uint8_t const increm_hh, uint8_t const increm_mm, uint8_t const sec)
 {
+    /*
+        fonction qui va formater l'affichage du menu 'reglage de l'heure' 
+    */
+
     setCursor(1, 0);
     print("REGLAGE HEURE:");
     setCursor(4, 1);
@@ -160,7 +151,7 @@ void Screen::display_set_hour(int const increm_hh, int const increm_mm, int cons
     print(time.data);
 }
 
-void Screen::display_set_alrm(int hh, int mm)
+void Screen::display_set_alrm(uint8_t hh, uint8_t mm)
 {
     setCursor(0, 0);
     print("*REGLAGE ALARME*");
@@ -170,7 +161,7 @@ void Screen::display_set_alrm(int hh, int mm)
     print(buff);
 }
 
-void Screen::display_set_year(unsigned long const yy)
+void Screen::display_set_year(uint16_t const yy)
 {
     setCursor(1, 0);
     print("REGLAGE ANNEE:");
@@ -178,7 +169,7 @@ void Screen::display_set_year(unsigned long const yy)
     print(yy);
 }
 
-void Screen::display_set_month(int const mth)
+void Screen::display_set_month(uint8_t const mth)
 {
     setCursor(0, 0);
     print("REGLAGE MOIS:");
@@ -192,7 +183,7 @@ void Screen::display_set_month(int const mth)
     
 }
 
-void Screen::display_set_day(int const dy)
+void Screen::display_set_day(uint8_t const dy)
 {
     setCursor(1, 0);
     print("REGLAGE JOUR:");

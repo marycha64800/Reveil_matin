@@ -7,23 +7,20 @@
 	module implemente les fonctions de chaque bouton 
 
 */
-
+#include "arduino.h"
 
 
 class Switch
 {
 public:
-	Switch(int pin);
+	Switch(uint8_t pin);
 	void init();
-	volatile bool state;
+	bool state;
 	bool ctl_state();
-	
-
-protected:
-	 int  swicth_pin;
+	uint8_t  swicth_pin;
 
 private:
-  int _delay_push = 70;
+	int _delay_push = 70;
 
 };
 
@@ -32,18 +29,14 @@ private:
 class PushButton : public Switch
 {
 public:
-	PushButton(int pin);
+	PushButton(uint8_t pin );
 	struct Command
 	{
 		bool action = false;
-		int increment = 0;
-		unsigned long prev = 0;
+		uint8_t increment = 0;
+		
 	};
 	Command long_push();
-
-protected:
-
-	
 
 private:
 	
