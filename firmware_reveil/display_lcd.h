@@ -43,6 +43,7 @@ class Screen : public LiquidCrystal_I2C
     void display_set_year(uint16_t const yy);
     void display_set_month(uint8_t const mth);
     void display_set_day(uint8_t const dy);
+    void display_alarm(bool *first_pass);
    
 
     

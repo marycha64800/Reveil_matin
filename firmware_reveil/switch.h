@@ -15,11 +15,10 @@ class Switch
 public:
 	Switch(uint8_t pin);
 	void init();
-	bool state;
 	bool ctl_state();
 	uint8_t  swicth_pin;
 
-private:
+protected:
 	int _delay_push = 70;
 
 };
@@ -37,6 +36,7 @@ public:
 		
 	};
 	Command long_push();
+	bool push();
 
 private:
 	

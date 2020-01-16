@@ -4,11 +4,12 @@
     Author:     Marycha
 */
 
-//#include <RTClib.h>
-//#include <LiquidCrystal_I2C.h>
+#include <RTClib.h>
+#include <LiquidCrystal_I2C.h>
 
 #include"display_lcd.h"
 #include"switch.h"
+
 
 const uint8_t ADRR_LCD = 0x3F;
 const uint8_t PIN_SWITCH_ALRM = 2;
@@ -16,6 +17,7 @@ const uint8_t PIN_SWICTH_BLUE = 3;
 const uint8_t PIN_SWITCH_WHITE = 4;
 const uint8_t PIN_SWITCH_BLACK = 5;
 const uint8_t PIN_SWITCH_YELLOW = 6;
+const uint8_t PIN_TONE = 7;
 
 
 
@@ -39,7 +41,7 @@ struct NewSettingValue
 ******************************************************************************************************/
 
 
-void alarm_shut_down();
+void play_alarm();
 void set_now(DateTime* date );
 void set_hours(uint8_t hh, uint8_t mm, uint8_t ss, NewSettingValue* new_value);
 void set_alrm(NewSettingValue* alarm);
@@ -78,8 +80,6 @@ void setup()
     // Mise a l'heure du module rtc 
    Rtc.adjust(DateTime(__DATE__,__TIME__));
    
-    // interruption de l'alarme 
-    attachInterrupt(0,alarm_shut_down,RISING);
     
     delay(500);
 }
@@ -95,18 +95,20 @@ void loop()
 {
   
   DateTime now = Rtc.now();
+
+  //______ affichage ecran principal _____________
+
   Lcd.display_home(&now, Switch_lever.ctl_state());
-  
-  if (Wht_bttn.long_push().action)
-  {
-      set_now(&now);
-      while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relache pour continuer*/ };
-  }
-  else if (Blk_bttn.long_push().action )
-  {
-      set_alrm(&alarm_setting);
-      while (Blk_bttn.long_push().action) {/*on attend que le bouton soit relache pour continuer*/ };
-  }
+
+  // __________menu des reglages__________________
+
+  if (Wht_bttn.push()) { set_now(&now); }
+  else if (Blk_bttn.push()) { set_alrm(&alarm_setting); }
+
+  // ______________reveil ________________________
+
+  if (Switch_lever.ctl_state() == true && alarm_setting.hh == now.hour() && alarm_setting.mm == now.minute()) { play_alarm(); }
+     
   
 }
 
@@ -119,10 +121,19 @@ void loop()
 ******************************************************************************************************/
 
 
-
-void alarm_shut_down()
+void play_alarm()
 {
-    Switch_lever.state = false;
+    Lcd.clear();
+    bool pass = true;
+    while (Switch_lever.ctl_state())
+    {
+        Lcd.setCursor(4, 0);
+        if (pass) { Lcd.display(); pass = !pass; }
+        else { Lcd.noDisplay(); pass = !pass; }
+        Lcd.print("DEBOUT !");
+        tone(PIN_TONE, 500, 50);
+
+    }
 }
 
 void set_now(DateTime* date )
@@ -140,9 +151,9 @@ void set_now(DateTime* date )
 
 uint8_t set_day(uint8_t dy)
 {
-    while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relacher pour continuer*/ };
+   
     Lcd.clear();
-    while (!Wht_bttn.long_push().action)
+    while (!Wht_bttn.push())
     {
         if (Blue_bttn.long_push().action)
         {
@@ -164,9 +175,9 @@ uint8_t set_day(uint8_t dy)
 
 uint8_t set_month(uint8_t mth)
 {
-    while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relacher pour continuer*/ };
+   
     Lcd.clear();
-    while (!Wht_bttn.long_push().action)
+    while (!Wht_bttn.push())
     {
         if (Blue_bttn.long_push().action)
         {
@@ -186,9 +197,9 @@ uint8_t set_month(uint8_t mth)
 
 uint16_t set_year(uint16_t yy)
 {
-    while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relacher pour continuer*/ };
+   
     Lcd.clear();
-    while (!Wht_bttn.long_push().action)
+    while (!Wht_bttn.push())
     {
         if (Blue_bttn.long_push().action)
         {
@@ -207,12 +218,11 @@ uint16_t set_year(uint16_t yy)
 
 void set_hours(uint8_t hh, uint8_t mm, uint8_t ss, NewSettingValue * new_value)
 {
-    while (Wht_bttn.long_push().action) {/*on attend que le bouton soit relacher pour continuer*/ };
     new_value->hh = hh;
     new_value->mm = mm;
     new_value->ss = ss;
     Lcd.clear();
-    while (!Wht_bttn.long_push().action)
+    while (!Wht_bttn.push())
     {
         if (Blue_bttn.long_push().action)
         {
@@ -232,10 +242,10 @@ void set_hours(uint8_t hh, uint8_t mm, uint8_t ss, NewSettingValue * new_value)
 
 void set_alrm(NewSettingValue* alarm)
 {
-    while (Blk_bttn.long_push().action) {/*on attend que le bouton soit relacher pour continuer*/ };
+   
    
     Lcd.clear();
-    while (!Blk_bttn.long_push().action)
+    while (!Blk_bttn.push())
     {
         
         if (Blue_bttn.long_push().action)

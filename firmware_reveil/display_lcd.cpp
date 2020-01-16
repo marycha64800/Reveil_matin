@@ -192,3 +192,13 @@ void Screen::display_set_day(uint8_t const dy)
     sprintf(buff, "%02d", dy);
     print(buff);
 }
+
+void Screen::display_alarm(bool* first_pass)
+{
+    if (*first_pass) { clear(); }
+    *first_pass = false;
+    setCursor(4, 0);
+    if (*first_pass % 2) { display(); }
+    else { noDisplay(); }
+    print("Debout!");
+}
