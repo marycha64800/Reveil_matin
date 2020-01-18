@@ -2,10 +2,9 @@
 #include "display_lcd.h"
 
 
-Screen::Screen(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows, uint16_t dly_scrll) : LiquidCrystal_I2C(lcd_Addr, lcd_cols, lcd_rows)
+Screen::Screen(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows) : LiquidCrystal_I2C(lcd_Addr, lcd_cols, lcd_rows)
 {
     _size_lcd = lcd_cols;
-    _delay_scroll = dly_scrll;
     _index_lcd = _size_lcd - 1;
     _previous_millis = 0;
 }
@@ -57,7 +56,7 @@ Screen::_DateString Screen::_format_date(uint8_t const dayOfTheWeek, uint8_t con
 
 
 
-void Screen::_scroll_one_line( char const* text_to_scroll, uint8_t const line)
+void Screen::_scroll_one_line( char const* text_to_scroll, uint8_t const line, uint16_t delay_scroll = 500)
 {
     /*
     Methode qui permet de deplacer du texte sur une seule ligne sans bloquer l'excution d'autre programme.
@@ -74,7 +73,7 @@ void Screen::_scroll_one_line( char const* text_to_scroll, uint8_t const line)
     uint8_t const size_char = strlen(text_to_scroll);
 
 
-    if (millis() - _previous_millis >= _delay_scroll)// fonction non bloquante le delay et reglable dans le header
+    if (millis() - _previous_millis >= delay_scroll)// fonction non bloquante le delay et reglable dans le header
     {
         if (_index_lcd >= 0 ) // vrai tant que l'ecran n'est pas rempli
         {

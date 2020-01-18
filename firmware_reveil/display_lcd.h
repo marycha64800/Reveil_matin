@@ -15,7 +15,6 @@ class Screen : public LiquidCrystal_I2C
       int8_t _index_char = 1;
       uint32_t _previous_millis;
       uint8_t _size_lcd;
-      uint16_t _delay_scroll;
       int8_t _index_lcd;
 
       template<unsigned N>
@@ -29,14 +28,14 @@ class Screen : public LiquidCrystal_I2C
 
       _TimeString _format_time(uint8_t const hh, uint8_t const mm, uint8_t const ss);
       _DateString _format_date(uint8_t const dayOfTheWeek, uint8_t const day, uint8_t const month, uint16_t const year);
-      void _scroll_one_line(char const* text_to_s_croll, uint8_t line);
+      void _scroll_one_line(char const* text_to_s_croll, uint8_t line, uint16_t delay_scroll = 500);
       void _display_alarm(bool swch_alrm);
       
       
   public:
 
     
-    Screen(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows, uint16_t dly_scrll = 500);
+    Screen(uint8_t lcd_Addr, uint8_t lcd_cols, uint8_t lcd_rows);
     void display_home(DateTime* date, bool switch_alrm);
     void display_set_hour(uint8_t const increm_hh, uint8_t const increm_mm, uint8_t sec);
     void display_set_alrm(uint8_t const hh, uint8_t const mm);
@@ -47,7 +46,7 @@ class Screen : public LiquidCrystal_I2C
    
 
     
-    //void display_test(char *message);
+   
     
 };
 #endif
