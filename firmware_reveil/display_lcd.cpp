@@ -56,7 +56,7 @@ Screen::_DateString Screen::_format_date(uint8_t const dayOfTheWeek, uint8_t con
 
 
 
-void Screen::_scroll_one_line( char const* text_to_scroll, uint8_t const line, uint16_t delay_scroll = 500)
+void Screen::_scroll_one_line( char const* text_to_scroll, uint8_t const line, uint16_t delay_scroll)
 {
     /*
     Methode qui permet de deplacer du texte sur une seule ligne sans bloquer l'excution d'autre programme.

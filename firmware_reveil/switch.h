@@ -2,11 +2,6 @@
 #define SWITCH_H_
 
 
-
-/*
-	module implemente les fonctions de chaque bouton 
-
-*/
 #include "arduino.h"
 
 

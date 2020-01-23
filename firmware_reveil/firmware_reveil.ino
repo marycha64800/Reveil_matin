@@ -8,8 +8,7 @@
 #include <RTClib.h>
 #include <LiquidCrystal_I2C.h>
 
-#include"display_lcd.h"
-#include"switch.h"
+
 #include"setting.h"
 
 
@@ -17,11 +16,14 @@ void setup()
 {
     // initiaisation des objets
     Lcd.init();
-    Switch_lever.init();
+    Switch_alarm.init();
     Blue_bttn.init();
     Yelw_bttn.init();
     Wht_bttn.init();
     Blk_bttn.init();
+    Eye_left.setup();
+    Eye_right.setup();
+    
 
     Rtc.begin();
     Serial.begin(9600);
@@ -48,7 +50,7 @@ void loop()
 
   //______ affichage ecran principal _____________
 
-  Lcd.display_home(&now, Switch_lever.ctl_state());
+  Lcd.display_home(&now, Switch_alarm.ctl_state());
 
   // __________menu des reglages__________________
 
@@ -57,10 +59,7 @@ void loop()
 
   // ______________reveil ________________________
 
-  if (Switch_lever.ctl_state() && alarm_setting.hh == now.hour() && alarm_setting.mm == now.minute() && now.second() == 0) { play_alarm(); }
-     
-  
+  if (Switch_alarm.ctl_state() && alarm_setting.hh == now.hour() && alarm_setting.mm == now.minute() && now.second() == 0) { play_alarm(); }
+ 
+   
 }
-
-
-
