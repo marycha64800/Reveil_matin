@@ -45,7 +45,6 @@ void setup()
 
 void loop()
 {
-  
   DateTime now = Rtc.now();
 
   //______ affichage ecran principal _____________
@@ -59,7 +58,5 @@ void loop()
 
   // ______________reveil ________________________
 
-  if (Switch_alarm.ctl_state() && alarm_setting.hh == now.hour() && alarm_setting.mm == now.minute() && now.second() == 0) { play_alarm(); }
- 
-   
+  if (Switch_alarm.ctl_state() && alarm_setting.hh == now.hour() && alarm_setting.mm == now.minute() && now.second() == 0) { play_alarm(); }  
 }

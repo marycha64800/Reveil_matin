@@ -5,8 +5,8 @@
 #include <LedControl.h>
 
 const uint64_t SPACE_INVADER[2] PROGMEM = { 
-            0x24a5a5ffdb7e2424,
-            0x81427c7edbffa5a5 
+            0x1e3cef3c3cef3c1e,
+            0xf13eec3c3cec3ef1
         };
    
     const uint64_t ARROW[17] PROGMEM = {

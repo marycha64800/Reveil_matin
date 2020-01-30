@@ -102,7 +102,7 @@ void play_alarm()
           play_anim(sprite_1, sprite_2);
           previous_millis = millis(); 
         }
-        else if (millis() - previous_millis >= 50) { tone(PIN_TONE, 500, 50); }
+        else if (millis() - previous_millis >= 50) { tone(PIN_TONE, 500, 25); }
       
        
 
