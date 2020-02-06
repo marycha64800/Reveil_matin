@@ -21,7 +21,7 @@ bool Switch::ctl_state()
 	/*
 		retourne l'etat du bouton "NF"
 	*/
- return !digitalRead(swicth_pin);
+ return digitalRead(swicth_pin);
 }
 
 PushButton::PushButton(uint8_t pin) : Switch(pin)
